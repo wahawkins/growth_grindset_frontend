@@ -1,16 +1,26 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button } from 'react-native';
+import { fetchWorkouts } from '../services/api';
 
-export default function WorkoutScreen({ navigation }) {
+const WorkoutScreen = () => {
+    const [workouts, setWorkouts] = useState([]);
+
+    useEffect(() => {
+        const loadWorkouts = async () => {
+            const data = await fetchWorkouts();
+            setWorkouts(data);
+        };
+        loadWorkouts();
+    }, []);
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Workout Details</Text>
-            <Button title="Back to Home" onPress={() => navigation.goBack()} />
+        <View>
+            <Text>Workouts</Text>
+            {workouts.map((workout) => (
+                <Text key={workout.id}>{workout.name}</Text>
+            ))}
         </View>
     );
-}
+};
 
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 }
-});
+export default WorkoutScreen;
